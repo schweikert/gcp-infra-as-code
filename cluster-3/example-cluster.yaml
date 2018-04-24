@@ -1,0 +1,13 @@
+imports:
+- path: templates/cluster.jinja        
+  name: cluster.jinja
+
+resources:                             
+- name: example-cluster
+  type: cluster.jinja        
+  properties:
+    description: "Example Cluster"
+    zones:
+    - europe-west3-b
+    - europe-west3-c
+    initialNodeCount: 1
