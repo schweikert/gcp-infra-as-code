@@ -1,0 +1,23 @@
+resources:
+
+- name: cluster
+  type: container.v1.cluster
+  properties:
+    zone: europe-west1-b
+    cluster:
+      description: "My example cluster"
+      initialClusterVersion: '1.9.6-gke.1'
+      locations: [ 'europe-west1-b', 'europe-west1-c' ]
+      nodePools:
+      - name: cluster-pool
+        initialNodeCount: 1
+        config:
+          machineType: 'n1-standard-1'
+          oauthScopes:
+          - https://www.googleapis.com/auth/compute
+          - https://www.googleapis.com/auth/devstorage.read_only
+          - https://www.googleapis.com/auth/logging.write
+          - https://www.googleapis.com/auth/monitoring
+        management:
+          autoUpgrade: true
+          autoRepair: true
