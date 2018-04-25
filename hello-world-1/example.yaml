@@ -1,0 +1,9 @@
+imports:
+- path: templates/hello-world.jinja
+  name: hello-world.jinja
+
+resources:                             
+- name: hello-world
+  type: hello-world.jinja        
+  properties:
+    cluster: example-cluster

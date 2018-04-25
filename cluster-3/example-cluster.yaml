@@ -8,6 +8,6 @@ resources:
   properties:
     description: "Example Cluster"
     zones:
-    - europe-west3-b
-    - europe-west3-c
+    - europe-west1-b
+    - europe-west1-c
     initialNodeCount: 1

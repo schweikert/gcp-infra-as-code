@@ -1,0 +1,74 @@
+{% set NAME_PREFIX = env['deployment'] %}
+{% set CLUSTER_TYPE = env['project'] + '/' + properties['cluster'] + '-type' %}
+{% set CLUSTER_TYPE_APPS = env['project'] + '/' + properties['cluster'] + '-type-apps' %}
+{% set CLUSTER_TYPE_BETA = env['project'] + '/' + properties['cluster'] + '-type-v1beta1-extensions' %}
+{% set DEPLOYMENT_COLLECTION = '/apis/apps/v1/namespaces/{namespace}/deployments' %}
+{% set INGRESS_COLLECTION = '/apis/extensions/v1beta1/namespaces/{namespace}/ingresses' %}
+{% set SERVICE_COLLECTION = '/api/v1/namespaces/{namespace}/services' %}
+
+resources:
+- name: {{ NAME_PREFIX }}
+  type: {{ CLUSTER_TYPE_APPS }}:{{ DEPLOYMENT_COLLECTION }}
+  properties:
+    apiVersion: apps/v1
+    kind: Deployment
+    namespace: {{ properties['namespace'] | default('default') }}
+    metadata:
+      labels:
+        app: {{ env['name'] }}
+        deployment: {{ env['deployment'] }}
+    spec:
+      replicas: {{ properties['replicas'] | default(2) }}
+      selector:
+        matchLabels:
+          app: {{ env['name'] }}
+          deployment: {{ env['deployment'] }}
+      template:
+        metadata:
+          labels:
+            app: {{ env['name'] }}
+            deployment: {{ env['deployment'] }}
+        spec:
+          containers:
+          - image: gcr.io/google-samples/hello-app:1.0
+            name: hello-server
+            ports:
+            - containerPort: 8080
+              protocol: TCP
+
+# - name: {{ NAME_PREFIX }}-svc
+#   type: {{ CLUSTER_TYPE }}:{{ SERVICE_COLLECTION }}
+#   properties:
+#     apiVersion: v1
+#     kind: Service
+#     namespace: {{ properties['namespace'] }}
+#     metadata:
+#       name: {{ NAME_PREFIX }}-svc
+#       labels:
+#         app: {{ env['name'] }}
+#         deployment: {{ env['deployment'] }}
+#     spec:
+#       ports:
+#       - port: 80
+#         targetPort: 8080
+#       selector:
+#         app: {{ env['name'] }}
+#         deployment: {{ env['deployment'] }}
+# 
+# - name: {{ NAME_PREFIX }}-ingress
+#   type: {{ CLUSTER_TYPE_BETA }}:{{ INGRESS_COLLECTION }}
+#   properties:
+#     apiVersion: extensions/v1beta1
+#     kind: Ingress
+#     namespace: {{ properties['namespace'] }}
+#     metadata:
+#       annotations:
+#         kubernetes.io/ingress.class: "nginx"
+#     spec:
+#       rules:
+#       - http:
+#           paths:
+#           - path: /hello
+#             backend:
+#               serviceName: {{ NAME_PREFIX }}-svc
+#               servicePort: 80
