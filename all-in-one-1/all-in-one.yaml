@@ -1,0 +1,23 @@
+imports:
+- path: templates/cluster.jinja        
+  name: cluster.jinja
+
+- path: templates/hello-world.jinja
+  name: hello-world.jinja
+
+resources:                             
+- name: example-cluster
+  type: cluster.jinja        
+  properties:
+    description: "Example Cluster"
+    zones:
+    - europe-west1-b
+    - europe-west1-c
+    initialNodeCount: 1
+
+- name: hello-world
+  type: hello-world.jinja        
+  properties:
+    cluster-type:                    $(ref.example-cluster.clusterType)
+    cluster-type-apps:               $(ref.example-cluster.clusterType-apps)
+    cluster-type-v1beta1-extensions: $(ref.example-cluster.clusterType-v1beta1-extensions)
